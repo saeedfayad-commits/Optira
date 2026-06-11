@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Optira — Find your path</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#08081A;
+  --surface:#0F0F2A;
+  --card:#161630;
+  --card2:#1C1C3A;
+  --violet:#7C3AED;
+  --violet-light:#A78BFA;
+  --violet-glow:rgba(124,58,237,0.25);
+  --coral:#FF4D6D;
+  --coral-glow:rgba(255,77,109,0.2);
+  --white:#F0EFFF;
+  --muted:#8887A8;
+  --border:rgba(255,255,255,0.07);
+  --border-med:rgba(255,255,255,0.14);
+  --r:14px;
+  --r-sm:10px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden;}
+
+/* ── UTILS ── */
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}
+
+/* ── LANDING ── */
+#landing{min-height:100vh;display:flex;flex-direction:column;}
+
+.nav{padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:10;}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;letter-spacing:-0.5px;color:var(--white);}
+.logo em{font-style:normal;color:var(--violet-light);}
+.nav-badge{font-size:11px;font-weight:600;background:rgba(124,58,237,0.2);color:var(--violet-light);padding:4px 12px;border-radius:20px;border:1px solid rgba(124,58,237,0.35);letter-spacing:0.5px;text-transform:uppercase;}
+
+/* Hero */
+.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1.5rem 4rem;position:relative;overflow:hidden;}
+
+/* animated orbs */
+.orbs{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);animation:drift 8s ease-in-out infinite;}
+.orb1{width:400px;height:400px;background:rgba(124,58,237,0.3);top:-10%;left:-10%;animation-delay:0s;}
+.orb2{width:300px;height:300px;background:rgba(255,77,109,0.2);bottom:-5%;right:-5%;animation-delay:-3s;}
+.orb3{width:250px;height:250px;background:rgba(124,58,237,0.15);top:40%;right:10%;animation-delay:-5s;}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(30px,-20px) scale(1.05);}66%{transform:translate(-20px,15px) scale(0.97);}}
+
+.hero-inner{position:relative;z-index:2;max-width:680px;}
+
+.hero-kicker{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid var(--border-med);padding:6px 16px;border-radius:30px;font-size:13px;color:var(--muted);margin-bottom:1.5rem;backdrop-filter:blur(8px);}
+.kicker-dot{width:7px;height:7px;border-radius:50%;background:var(--coral);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);}}
+
+.hero-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(38px,7vw,72px);line-height:1.05;letter-spacing:-2px;margin-bottom:1.25rem;}
+.hero-title .line2{color:var(--violet-light);}
+.hero-title .line3{
+  background:linear-gradient(90deg,var(--coral),var(--violet-light));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+.hero-sub{font-size:16px;color:var(--muted);line-height:1.75;max-width:460px;margin:0 auto 2.5rem;}
+
+.cta-group{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;}
+
+.btn-cta{display:inline-flex;align-items:center;gap:10px;background:var(--violet);color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;padding:15px 32px;border-radius:50px;border:none;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 0 40px rgba(124,58,237,0.5);}
+.btn-cta:hover{transform:translateY(-2px);box-shadow:0 0 60px rgba(124,58,237,0.7);}
+.btn-cta:active{transform:scale(0.97);}
+.btn-cta .arrow{transition:transform 0.2s;}
+.btn-cta:hover .arrow{transform:translateX(3px);}
+
+.btn-ghost-cta{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:14px 24px;border-radius:50px;border:1px solid var(--border-med);cursor:pointer;transition:color 0.15s,border-color 0.15s;}
+.btn-ghost-cta:hover{color:var(--white);border-color:rgba(255,255,255,0.25);}
+
+.hero-stats{display:flex;align-items:center;justify-content:center;gap:0;margin-top:3rem;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;backdrop-filter:blur(12px);background:rgba(255,255,255,0.03);width:fit-content;margin-left:auto;margin-right:auto;}
+.stat{padding:16px 28px;text-align:center;border-right:1px solid var(--border);}
+.stat:last-child{border-right:none;}
+.stat-num{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;color:var(--white);}
+.stat-label{font-size:11px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;}
+
+/* section strip */
+.section-strip{background:var(--surface);border-top:1px solid var(--border);padding:1.25rem 2rem;display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;}
+.section-strip::-webkit-scrollbar{display:none;}
+.strip-chip{display:flex;align-items:center;gap:6px;white-space:nowrap;font-size:12px;font-weight:500;color:var(--muted);padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--card);}
+.strip-chip span{width:6px;height:6px;border-radius:50%;background:var(--violet-light);flex-shrink:0;}
+
+
+/* ── ASSESSMENT ── */
+#assessment{display:none;min-height:100vh;flex-direction:column;}
+
+.a-header{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;position:sticky;top:0;z-index:10;backdrop-filter:blur(12px);}
+.a-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--white);}
+.a-logo em{font-style:normal;color:var(--violet-light);}
+
+.prog-wrap{flex:1;}
+.prog-track{height:3px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
+.prog-fill{height:3px;background:linear-gradient(90deg,var(--violet),var(--coral));border-radius:3px;transition:width 0.5s cubic-bezier(0.4,0,0.2,1);}
+.prog-text{font-size:11px;color:var(--muted);margin-top:5px;text-align:right;}
+
+.pct-badge{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--violet-light);min-width:42px;text-align:right;}
+
+.a-body{flex:1;max-width:640px;width:100%;margin:0 auto;padding:2rem 1.25rem 5rem;}
+
+/* section pill */
+.sec-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;color:var(--violet-light);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;}
+.sec-desc{font-size:13px;color:var(--muted);margin-bottom:1.5rem;line-height:1.6;}
+
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-bottom:1.25rem;}
+.q-num{font-size:11px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;}
+.q-text{font-size:15px;font-weight:500;color:var(--white);line-height:1.65;margin-bottom:1.25rem;}
+
+.opts{display:flex;flex-direction:column;gap:8px;}
+.opt{display:flex;align-items:center;gap:12px;padding:13px 16px;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--card2);cursor:pointer;font-size:14px;color:var(--muted);text-align:left;transition:all 0.15s;font-family:'DM Sans',sans-serif;line-height:1.5;}
+.opt:hover{border-color:rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:var(--white);}
+.opt.sel{border-color:var(--violet);background:rgba(124,58,237,0.15);color:var(--white);}
+.opt.sel .odot{background:var(--violet);border-color:var(--violet);}
+.opt.sel .odot::after{content:'';display:block;width:6px;height:6px;border-radius:50%;background:#fff;margin:auto;}
+.odot{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+
+/* rank */
+.rank-hint{font-size:12px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.rank-opts{display:flex;flex-direction:column;gap:8px;}
+.rank-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--card2);cursor:pointer;font-size:14px;color:var(--muted);transition:all 0.15s;user-select:none;}
+.rank-item:hover{border-color:rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:var(--white);}
+.rank-item.rk{border-color:var(--violet);background:rgba(124,58,237,0.15);color:var(--white);}
+.rbadge{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid var(--border-med);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted);flex-shrink:0;transition:all 0.15s;font-family:'Syne',sans-serif;}
+.rank-item.rk .rbadge{background:var(--violet);border-color:var(--violet);color:#fff;}
+
+/* nav row */
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;}
+.btn-next{display:inline-flex;align-items:center;gap:8px;background:var(--violet);color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;padding:12px 28px;border-radius:50px;border:none;cursor:pointer;transition:all 0.15s;box-shadow:0 0 24px rgba(124,58,237,0.4);}
+.btn-next:hover{background:#6D28D9;box-shadow:0 0 36px rgba(124,58,237,0.6);}
+.btn-next:active{transform:scale(0.97);}
+.btn-next:disabled{opacity:0.3;cursor:not-allowed;box-shadow:none;}
+.btn-back{display:inline-flex;align-items:center;gap:6px;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:12px 20px;border-radius:50px;border:1px solid var(--border);cursor:pointer;transition:all 0.15s;}
+.btn-back:hover{color:var(--white);border-color:var(--border-med);}
+
+/* ── RESULTS ── */
+.results-hero{text-align:center;padding:2rem 0 1.5rem;position:relative;}
+.results-kicker{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--violet-light);margin-bottom:8px;}
+.results-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,5vw,40px);letter-spacing:-1px;margin-bottom:8px;}
+.results-sub{font-size:14px;color:var(--muted);}
+
+.profile-card{background:linear-gradient(135deg,rgba(124,58,237,0.2) 0%,rgba(255,77,109,0.1) 100%);border:1px solid rgba(124,58,237,0.35);border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden;}
+.profile-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(124,58,237,0.15);filter:blur(30px);}
+.profile-type-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--violet-light);margin-bottom:8px;}
+.profile-type-name{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;letter-spacing:-0.5px;color:var(--white);margin-bottom:10px;}
+.profile-type-desc{font-size:14px;color:rgba(240,239,255,0.75);line-height:1.75;}
+
+.res-section-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.res-section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.trait-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:2rem;}
+.trait-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;text-align:center;}
+.trait-name{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.trait-arc{width:56px;height:56px;margin:0 auto 8px;position:relative;}
+.trait-arc svg{transform:rotate(-90deg);}
+.trait-arc .bg{stroke:rgba(255,255,255,0.06);}
+.trait-arc .fg{stroke:var(--violet-light);stroke-linecap:round;transition:stroke-dashoffset 1s ease;}
+.trait-val{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--white);}
+
+.path-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:2rem;}
+.path-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;transition:border-color 0.2s;}
+.path-card.top{border-color:rgba(124,58,237,0.5);}
+.path-icon-wrap{width:40px;height:40px;border-radius:10px;background:rgba(124,58,237,0.15);display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:20px;color:var(--violet-light);}
+.path-card.top .path-icon-wrap{background:rgba(255,77,109,0.15);color:var(--coral);}
+.path-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--white);margin-bottom:5px;}
+.path-desc{font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:10px;}
+.match-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(124,58,237,0.15);color:var(--violet-light);border:1px solid rgba(124,58,237,0.3);}
+.match-pill.top-m{background:var(--coral);color:#fff;border-color:var(--coral);box-shadow:0 0 16px rgba(255,77,109,0.4);}
+
+.role-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:2rem;}
+.role-tag{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:500;border:1px solid var(--border);color:var(--muted);background:var(--card);transition:all 0.15s;}
+.role-tag.hi{border-color:rgba(124,58,237,0.4);color:var(--violet-light);background:rgba(124,58,237,0.1);}
+
+.insight-list{display:flex;flex-direction:column;gap:8px;margin-bottom:2rem;}
+.insight{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--card);font-size:13px;color:rgba(240,239,255,0.75);line-height:1.65;}
+.ins-icon{width:28px;height:28px;border-radius:8px;background:rgba(124,58,237,0.15);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--violet-light);flex-shrink:0;}
+
+.results-footer{text-align:center;padding:1.5rem 0 3rem;border-top:1px solid var(--border);margin-top:0.5rem;}
+.results-footer p{font-size:13px;color:var(--muted);margin-bottom:1rem;}
+.btn-restart{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:11px 24px;border-radius:50px;border:1px solid var(--border-med);cursor:pointer;transition:all 0.15s;}
+.btn-restart:hover{color:var(--white);border-color:rgba(255,255,255,0.25);}
+
+/* mobile */
+@media(max-width:520px){
+  .nav{padding:1rem 1.25rem;}
+  .hero{padding:1.5rem 1.25rem 3rem;}
+  .hero-title{font-size:36px;letter-spacing:-1px;}
+  .hero-stats{flex-direction:row;}
+  .stat{padding:12px 16px;}
+  .stat-num{font-size:17px;}
+  .section-strip{padding:1rem 1.25rem;}
+  .a-header{padding:0.75rem 1rem;}
+  .a-body{padding:1.25rem 1rem 4rem;}
+  .trait-grid{grid-template-columns:repeat(2,1fr);}
+  .path-grid{grid-template-columns:1fr;}
+  .cta-group{flex-direction:column;align-items:stretch;}
+  .btn-cta,.btn-ghost-cta{justify-content:center;}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .orb,.kicker-dot,*{animation:none!important;transition:none!important;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LANDING ══ -->
+<div id="landing">
+  <nav class="nav">
+    <div class="logo">opt<em>ira</em></div>
+    <div class="nav-badge">Beta</div>
+  </nav>
+
+  <div class="hero">
+    <div class="orbs">
+      <div class="orb orb1"></div>
+      <div class="orb orb2"></div>
+      <div class="orb orb3"></div>
+    </div>
+    <div class="hero-inner">
+      <div class="hero-kicker">
+        <span class="kicker-dot"></span>
+        Free career assessment for young adults
+      </div>
+      <h1 class="hero-title">
+        <span class="line1">Stop guessing</span><br>
+        <span class="line2">what comes</span><br>
+        <span class="line3">next.</span>
+      </h1>
+      <p class="hero-sub">Answer 90 questions. Get a personalised profile, matched career paths, and roles built around who you actually are.</p>
+      <div class="cta-group">
+        <button class="btn-cta" onclick="startAssessment()">
+          Start for free <span class="arrow">→</span>
+        </button>
+        <button class="btn-ghost-cta">See how it works</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num">90</div><div class="stat-label">Questions</div></div>
+        <div class="stat"><div class="stat-num">9</div><div class="stat-label">Sections</div></div>
+        <div class="stat"><div class="stat-num">~15</div><div class="stat-label">Minutes</div></div>
+        <div class="stat"><div class="stat-num">8</div><div class="stat-label">Path types</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-strip">
+    <div class="strip-chip"><span></span> Reflective</div>
+    <div class="strip-chip"><span></span> Scenarios</div>
+    <div class="strip-chip"><span></span> Emotional</div>
+    <div class="strip-chip"><span></span> Ranking</div>
+    <div class="strip-chip"><span></span> Choices</div>
+    <div class="strip-chip"><span></span> Lifestyle</div>
+    <div class="strip-chip"><span></span> AI &amp; Future</div>
+    <div class="strip-chip"><span></span> Curiosity</div>
+    <div class="strip-chip"><span></span> Energy</div>
+  </div>
+</div>
+
+<!-- ══ ASSESSMENT ══ -->
+<div id="assessment" style="display:none;flex-direction:column;">
+  <h1 class="visually-hidden">Optira psychometric assessment</h1>
+  <header class="a-header">
+    <div class="a-logo">opt<em>ira</em></div>
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+      <div class="prog-text" id="prog-label">Section 1 of 9</div>
+    </div>
+    <div class="pct-badge" id="pct-badge">0%</div>
+  </header>
+  <div class="a-body" id="a-body"></div>
+</div>
+
+<script>
+const SECTIONS=[
+  {id:"reflective",title:"Reflective",desc:"Think back on your experiences and what they've revealed about you.",type:"single",
+   questions:[
+    {q:"When you look back at a project or task you were proud of, what made it feel meaningful?",options:["I solved a hard problem no one else could","I helped someone and saw the impact","I built or created something from nothing","I led a team to pull it off together"]},
+    {q:"Which school subjects or activities did you find yourself doing even when you didn't have to?",options:["Maths, science, or logic puzzles","Art, writing, or design","Sports, drama, or hands-on projects","Debating, organising events, or helping others"]},
+    {q:"When you've made a decision you regret, what usually went wrong?",options:["I didn't think it through carefully enough","I ignored my gut feeling","I let others pressure me into it","I was too afraid to take the risk"]},
+    {q:"What do people most often come to you for?",options:["Advice or a fresh perspective","Help with something practical","Creative ideas or inspiration","Organisation or getting things done"]},
+    {q:"If you could relive one week from your life so far, which type of week would it be?",options:["A week where I learned something new intensely","A week where I made something with my hands","A week where I travelled or explored somewhere new","A week where I made a real difference to someone"]},
+    {q:"What kind of feedback has stuck with you the most?",options:["'You're so logical and precise'","'You're incredibly creative'","'You really get people'","'You never give up'"]},
+    {q:"When a task feels boring, what's usually missing?",options:["A real challenge or problem to crack","Freedom to do it my own way","A sense that it matters","People or collaboration"]},
+    {q:"What's the best compliment someone could give you professionally?",options:["'You're brilliant at what you do'","'You changed how I see things'","'You made this happen when no one else could'","'Everyone trusts and respects you'"]},
+    {q:"Looking back, when did you feel most 'in the zone'?",options:["Solving a complex or technical problem","Creating something — writing, music, art, design","Competing or pushing my physical limits","Connecting with and understanding people"]},
+    {q:"Which childhood trait do you think still defines you today?",options:["Always asking 'why'","Always making or building things","Always organising or leading others","Always caring about fairness and people"]}
+  ]},
+  {id:"scenario",title:"Scenarios",desc:"How would you react in these real-world situations?",type:"single",
+   questions:[
+    {q:"You've just been given a big, vague project with no clear instructions. Your first move is to:",options:["Break it into steps and research everything","Start experimenting and see what emerges","Talk to people who've done something similar","Write a plan and assign roles"]},
+    {q:"Your team is stuck on a major problem. You naturally:",options:["Dig into the data and find the root cause","Propose an unusual or creative solution","Rally the group and rebuild morale","Take charge and make a call"]},
+    {q:"A new technology could automate part of your job. You feel:",options:["Excited — I want to learn it first","Curious — how can I use it creatively?","Cautious — I'd want to understand it fully first","Focused on how it affects my team"]},
+    {q:"You've got a free afternoon to work on anything. You choose:",options:["A deep-dive into something you've been researching","A creative or hands-on personal project","Catching up with someone you find inspiring","Mapping out a long-term plan for a goal"]},
+    {q:"A startup offers you a role with high risk and high reward. You:",options:["Ask to see the business model and financials first","Love the idea — the risk is part of the appeal","Want to know the team and culture before deciding","Negotiate hard on your terms and equity"]},
+    {q:"You spot a clear flaw in the way your school or workplace does something. You:",options:["Research a better solution and present it formally","Just quietly start doing it the better way","Talk to others to build support for a change","Raise it directly with whoever is in charge"]},
+    {q:"Someone challenges your idea in front of others. You:",options:["Defend it calmly with evidence","Acknowledge their point but push back creatively","Try to understand their perspective first","Hold your ground confidently"]},
+    {q:"You're given $10,000 and one year to do something meaningful with it. You:",options:["Research and invest it in something with proven returns","Fund a creative project or prototype an idea","Start a small business or community initiative","Donate or direct it to a cause you care about"]},
+    {q:"In a group project, a member isn't pulling their weight. You:",options:["Document the issue and address it rationally","Reframe the project so it plays to their strengths","Have a private, supportive conversation with them","Step up and quietly absorb the work yourself"]},
+    {q:"You get negative feedback on something you worked hard on. Your first instinct is:",options:["Analyse it objectively and iterate","Reframe it as part of the creative process","Talk it through with someone you trust","Use it as fuel to prove yourself"]}
+  ]},
+  {id:"emotional",title:"Emotional",desc:"Your gut reactions matter here — go with your first instinct.",type:"single",
+   questions:[
+    {q:"When you hear about someone who built a company from nothing, you feel:",options:["Inspired — I want to know their strategy","Restless — I have ideas I haven't acted on","Curious about the people and team behind it","Motivated — I want to do the same"]},
+    {q:"Walking through a hospital, you feel:",options:["Fascinated by the systems and technology","Moved by the human stories around you","Intrigued by how everything is organised","Drawn to help — I want to be useful here"]},
+    {q:"Watching a master craftsperson at work makes you feel:",options:["Impressed by the precision and skill","Deeply inspired — I want to create like that","Warm — there's something honest about it","Curious about how they learned and got there"]},
+    {q:"When a plan you've worked on falls apart, your dominant emotion is:",options:["Frustration — I want to fix it immediately","Curiosity — what can I learn from this?","Worry for how it affects others involved","Determination to rebuild it better"]},
+    {q:"Finishing a long, difficult piece of work makes you feel:",options:["Satisfied by the quality and accuracy","Proud of what I made or expressed","Grateful for the team who helped","Hungry for the next challenge"]},
+    {q:"When you're in a new city alone, you feel:",options:["Curious — I want to understand how it works","Alive — everything is new and stimulating","A little lonely — I miss people I know","Free — I love operating independently"]},
+    {q:"Hearing that a friend earned a lot of money young makes you feel:",options:["Interested in what approach they took","Inspired to do something bold myself","Happy for them — success stories are motivating","Competitive — I want to get there too"]},
+    {q:"The idea of speaking on stage in front of 500 people makes you feel:",options:["Nervous but I'd prepare until I was ready","Excited — I love performing or presenting","Very uncomfortable — I prefer smaller settings","Focused on the message I'd want to deliver"]},
+    {q:"When you see a beautiful piece of design or architecture, you feel:",options:["Analytically curious — how was it made?","Emotionally moved — I want to make things like this","Inspired to share it with someone","Driven to understand the thinking behind it"]},
+    {q:"When someone disagrees with you passionately, you feel:",options:["Engaged — I love a good intellectual debate","Open — maybe they see something I don't","Uncomfortable — I don't like conflict","Energised — I'll defend my position"]}
+  ]},
+  {id:"ranking",title:"Ranking",desc:"Tap all four options to rank them — first tap = most like you.",type:"rank",
+   questions:[
+    {q:"Rank these work environments from most to least appealing:",options:["A quiet lab or studio working alone","A fast-paced startup with a small team","A large organisation with structure and resources","Outdoors or in a hands-on physical environment"]},
+    {q:"Rank these types of success from most to least meaningful to you:",options:["Financial independence and wealth","Recognition and respect in your field","Making a visible difference to people's lives","Creative freedom and self-expression"]},
+    {q:"Rank these skills you'd most want to be known for:",options:["Technical mastery and expertise","Leadership and inspiring others","Creativity and originality","Empathy and human connection"]},
+    {q:"Rank these motivators from strongest to weakest in your life:",options:["Security and stability","Adventure and novelty","Purpose and meaning","Status and achievement"]},
+    {q:"Rank these activities by how energising you find them:",options:["Solving a complex logical puzzle","Presenting ideas to a group","Making or building something tangible","Planning and strategising long-term"]},
+    {q:"Rank these work values in order of importance:",options:["High salary and financial reward","Flexibility and work-life balance","Learning and development opportunities","Impact and contribution to society"]},
+    {q:"Rank these types of challenge from most to least motivating:",options:["An intellectual or analytical problem","A creative or design challenge","A human or relationship challenge","A physical or hands-on challenge"]},
+    {q:"Rank the following in terms of how much you trust them:",options:["Data and evidence","Your own instincts and gut","Advice from experts","Collective wisdom of a group"]},
+    {q:"Rank these career fears from most to least worrying:",options:["Being stuck doing the same thing forever","Failing publicly and losing credibility","Never earning enough to feel secure","Missing out on time with people I love"]},
+    {q:"Rank these legacy statements — which matters most?",options:["I built something that lasted","I made people's lives better","I pushed the boundaries of what's possible","I lived a rich, full, varied life"]}
+  ]},
+  {id:"choose",title:"Choices",desc:"Pick the option that fits you better — no wrong answers here.",type:"single",
+   questions:[
+    {q:"Which would you rather be?",options:["The expert everyone calls when things break","The visionary who spots what's coming next","The connector who brings the right people together","The builder who makes the idea real"]},
+    {q:"Would you rather:",options:["Have a job where every day is different","Have a job where you get progressively deeper expertise","Have a job where you lead and grow a team","Have a job where you directly help individuals"]},
+    {q:"Would you prefer to:",options:["Work with machines, code, or data","Work with ideas, stories, or designs","Work with people and relationships","Work with physical things and environments"]},
+    {q:"Which appeals more?",options:["A prestigious, well-paid corporate career","A risky but exciting entrepreneurial path","A skilled trade with craft and independence","A purpose-driven career in public service or charity"]},
+    {q:"Would you rather have:",options:["A mentor who teaches you technical depth","A mentor who pushes your creative thinking","A mentor who helps you lead and influence people","A mentor who has built their own business"]},
+    {q:"Which problem would you rather spend your life solving?",options:["How to make systems more efficient and intelligent","How to make the world more beautiful or expressive","How to make society fairer and more equitable","How to grow a business and create opportunity"]},
+    {q:"If forced to choose, would you rather:",options:["Be brilliant at one specific thing","Be adaptable and competent across many things","Be known for your values and character","Be known for your output and results"]},
+    {q:"Choose your ideal 10-year outcome:",options:["Leading a team or company in a field I love","Being a recognised expert people seek out","Having built something — a product, business, or body of work","Having made a measurable difference to a community or cause"]},
+    {q:"Would you rather:",options:["Invent a new technology","Write, direct, or create something that moves people","Run an organisation that changes how something works","Train or mentor the next generation of talent"]},
+    {q:"Which describes you better?",options:["I do my best thinking alone with time to reflect","I do my best thinking in conversation with others","I do my best thinking when I'm actively doing something","I do my best thinking when I'm under pressure"]}
+  ]},
+  {id:"lifestyle",title:"Lifestyle",desc:"How you want to live shapes the work that's right for you.",type:"single",
+   questions:[
+    {q:"Your ideal working week looks like:",options:["Structured 9–5 with clear boundaries","Flexible hours, outcome-focused","Variable — intense sprints then quiet periods","Irregular — driven by projects and deadlines"]},
+    {q:"Where do you imagine yourself living and working in 10 years?",options:["A major city, close to the action","Somewhere quieter, near nature or community","Moving around — no fixed base","International — I want to live and work globally"]},
+    {q:"How important is financial security versus risk to you?",options:["Very important — I need a stable income","I'll accept some risk for significantly higher reward","Risk doesn't bother me if I believe in what I'm doing","I want to build wealth and am comfortable with high risk"]},
+    {q:"What role does physical movement play in your ideal life?",options:["I want a job that keeps me physically active","I like activity in my personal time but prefer desk work","I don't mind either — I adapt to what the job needs","Physical challenge and endurance are part of who I am"]},
+    {q:"How much do you value working independently vs. with others?",options:["Mostly independently — I focus better alone","A mix — solo for deep work, team for everything else","Collaborative all the way — energy comes from people","I want to lead others rather than work alongside them"]},
+    {q:"Which work-life balance matters most to you?",options:["I want evenings and weekends to be mine","I'll work hard if the work is meaningful — time is flexible","I want total integration — work and life as one","I want clear seasons: intense work phases and long breaks"]},
+    {q:"What's your relationship with routine?",options:["I love it — consistency makes me productive","I need some structure but also variety","I resist it — I work best when I can flow freely","I create routines for others but don't follow them myself"]},
+    {q:"Which lifestyle priority feels most non-negotiable?",options:["Earning enough to own property and have security","Having time and freedom to pursue passions","Being in a role that society values and respects","Being my own boss at some point"]},
+    {q:"How do you feel about travel as part of work?",options:["I'd love it — novelty and exposure are energising","Occasionally is ideal — not all the time","I'd rather stay rooted in one place","It depends on where — purposeful travel is great"]},
+    {q:"Which describes your relationship with money best?",options:["A tool for freedom and options","A measure of my success and effort","A necessity I want to worry about as little as possible","Something I want to accumulate seriously"]}
+  ]},
+  {id:"future",title:"AI & Future",desc:"The world is changing fast — where do you fit in what's coming?",type:"single",
+   questions:[
+    {q:"How do you feel about AI tools being used in your future career?",options:["Excited — I want to be the person who builds or wields them","Pragmatic — I'll use whatever helps me do my job better","Cautious — I want to understand the risks first","Focused on skills AI can't replace — human and creative ones"]},
+    {q:"Which emerging sector excites you the most?",options:["AI, robotics, and automation","Climate tech and sustainable energy","Biotech, health, and longevity","Creator economy, media, and digital culture"]},
+    {q:"The future of work will involve more automation. Your reaction:",options:["Opportunity — I want to be on the automation side","I'll specialise in something uniquely human","I'll adapt — I always find a way","I'll build businesses that serve the new landscape"]},
+    {q:"Which future role sounds most compelling to you?",options:["AI systems designer or data scientist","Climate or sustainability engineer","Digital health or biotech innovator","Community organiser or social entrepreneur"]},
+    {q:"What do you think the world needs most right now?",options:["Better technology and smarter systems","More creativity and cultural expression","Greater empathy and human connection","Stronger businesses and economic opportunity"]},
+    {q:"How do you think about your career over a lifetime?",options:["One deep specialisation I master completely","Several distinct chapters in different fields","A portfolio of projects, roles, and businesses","Continuous evolution — I can't predict it and that's fine"]},
+    {q:"Which skill do you think will be most valuable in 20 years?",options:["Deep technical and engineering expertise","Creative problem-solving and originality","Emotional intelligence and leadership","Strategic and entrepreneurial thinking"]},
+    {q:"What's your relationship with technology generally?",options:["I love it — I'm usually an early adopter","I use it practically but don't geek out","I'm selective — I use what helps but set limits","I'm more interested in people than tech"]},
+    {q:"How do you feel about the pace of change in the world?",options:["Energised — fast change creates huge opportunity","Curious — I want to understand where it's heading","Grounded — I value stability and long-term thinking","Motivated to help people navigate the change"]},
+    {q:"Where do you see yourself in the AI era?",options:["Building or programming AI systems","Applying AI creatively — art, storytelling, design","Using AI to run or grow a business","Working in roles that remain deeply human — care, teaching, leadership"]}
+  ]},
+  {id:"curiosity",title:"Curiosity",desc:"What draws your attention and sparks your interest?",type:"single",
+   questions:[
+    {q:"If you could spend a month learning anything, you'd choose:",options:["How to code or build software","How to design and make physical things","How a successful business actually runs","How to understand and help people better"]},
+    {q:"Which type of content are you most likely to consume in your own time?",options:["Science, technology, or mathematics","Business, startups, or investing","Philosophy, psychology, or human behaviour","Art, history, culture, or storytelling"]},
+    {q:"Which question do you find yourself asking most?",options:["How does this actually work?","What if we did it completely differently?","Why do people behave the way they do?","How do we make this happen?"]},
+    {q:"When exploring a new topic, you prefer to:",options:["Read deeply and systematically from reliable sources","Jump in and learn by doing","Talk to people who are immersed in it","Watch, observe, and absorb from multiple angles"]},
+    {q:"Which unsolved problem most captures your imagination?",options:["Curing diseases or extending healthy human life","Building truly intelligent machines","Ending poverty or creating economic equality","Exploring space or the deep ocean"]},
+    {q:"What kind of documentary would you stay up late to watch?",options:["A deep-dive into how a technology or system works","A profile of an entrepreneur or creative genius","An exploration of a social or human challenge","A story about extreme human achievement"]},
+    {q:"You're at a dinner with interesting people. You're most engaged when:",options:["Someone explains a complex idea really clearly","Someone shares a wild creative project they're working on","Someone talks honestly about a hard life lesson","Someone describes how they built something from scratch"]},
+    {q:"Which museum could you spend an entire day in?",options:["Science and technology","Modern art and design","Natural history and anthropology","Economic or industrial history"]},
+    {q:"The part of any subject that most interests you is:",options:["The underlying rules and how they connect","The creative applications and possibilities","The human stories and cultural context","The practical real-world implications"]},
+    {q:"When you encounter something you don't understand, you:",options:["Research it thoroughly until you fully understand it","Try to connect it to something I already know","Ask someone who knows better than me","Note it for later — I'll come back when it's relevant"]}
+  ]},
+  {id:"energy",title:"Energy",desc:"What powers you up — and what wipes you out?",type:"single",
+   questions:[
+    {q:"After a long week, what genuinely restores you?",options:["Solitude and quiet — reading, thinking, being alone","Creative output — making, writing, designing","Social connection — catching up with people I love","Physical activity or being in nature"]},
+    {q:"Which type of day leaves you buzzing?",options:["A day where I solved something really hard","A day where I made something I'm proud of","A day where I had brilliant conversations","A day where I shipped something and saw results"]},
+    {q:"What drains your energy the most?",options:["Repetitive tasks with no challenge","Working with people who don't care","Lack of creative freedom or autonomy","Uncertainty, chaos, or poor organisation"]},
+    {q:"When do you feel most like yourself?",options:["When I'm deep in concentration on a hard problem","When I'm in flow on a creative project","When I'm with people who get me","When I'm winning — making progress toward a goal"]},
+    {q:"What kind of recognition means most to you?",options:["Being known as an expert in my field","Being told my work moved or inspired someone","Earning the respect and loyalty of people I work with","Achieving measurable results others can see"]},
+    {q:"Which work scenario would leave you most energised?",options:["Discovering an insight no one else has seen yet","Finishing a creative project that came together perfectly","Mentoring someone who then has a breakthrough","Closing a deal, hitting a target, or winning a competition"]},
+    {q:"What's your relationship with deadlines?",options:["They focus me — I do my best work under pressure","I prefer to work ahead so I'm never rushed","I resist them but usually deliver in the end","I set my own internal deadlines regardless of external ones"]},
+    {q:"How do you feel about meetings and group discussions?",options:["Draining — I'd rather get the information async","Useful when they're purposeful and brief","Energising — I think better when talking it through","Necessary — I use them to lead and align"]},
+    {q:"What does 'doing good work' mean to you?",options:["Getting it right — accuracy, depth, and quality","Making it beautiful or original","Making it matter to the person it's for","Making it happen faster and better than expected"]},
+    {q:"When you imagine your ideal Monday morning, you feel:",options:["Calm and focused — I have a clear plan","Excited — there's something new to dive into","Connected — I'm looking forward to seeing my team","Driven — I'm ready to make things happen"]}
+  ]}
+];
+
+const TRAIT_KEYS=["analytical","creative","social","entrepreneurial","practical","empathetic"];
+const TRAIT_LABELS=["Analytical","Creative","Social","Entrepreneurial","Practical","Empathetic"];
+const TRAIT_COLORS=["#A78BFA","#FB7185","#34D399","#FBBF24","#60A5FA","#F472B6"];
+
+const PATHS=[
+  {name:"Technology & engineering",icon:"💻",desc:"Build systems and tools that power modern life.",match:"analytical",roles:["Software developer","Data analyst","Electrical engineer","Cybersecurity analyst","Product manager","Systems architect"]},
+  {name:"Creative industries",icon:"🎨",desc:"Shape culture through design, media, and storytelling.",match:"creative",roles:["UX designer","Filmmaker","Copywriter","Brand strategist","Architect","Creative director"]},
+  {name:"Business & entrepreneurship",icon:"🚀",desc:"Create value, lead teams, and build something of your own.",match:"entrepreneurial",roles:["Startup founder","Management consultant","Sales director","Operations manager","Venture analyst","Business development"]},
+  {name:"Health & human services",icon:"🩺",desc:"Work directly with people to improve wellbeing.",match:"empathetic",roles:["Paramedic","Physiotherapist","Social worker","Counsellor","Occupational therapist","Nurse practitioner"]},
+  {name:"Skilled trades & construction",icon:"🔧",desc:"Master a craft and build real, tangible things.",match:"practical",roles:["Electrician","Plumber","Carpenter","Civil engineer","Project foreman","Building surveyor"]},
+  {name:"Education & coaching",icon:"🎓",desc:"Develop talent and help others reach their potential.",match:"social",roles:["Teacher","Life coach","Corporate trainer","Youth worker","Curriculum designer","Career counsellor"]},
+  {name:"Science & research",icon:"🔬",desc:"Push the boundaries of human knowledge.",match:"analytical",roles:["Biologist","Environmental scientist","Psychologist","Data scientist","R&D specialist","Biomedical engineer"]},
+  {name:"Sustainability & environment",icon:"🌱",desc:"Work on the defining long-term challenge of our era.",match:"empathetic",roles:["Climate tech specialist","Sustainability consultant","Urban planner","Environmental lawyer","Clean energy engineer","Conservation scientist"]}
+];
+
+const PROFILES={
+  "analytical+creative":["The Innovator","You combine rigorous thinking with creative vision — a rare and powerful pairing. You're drawn to problems that don't have obvious answers and environments where you can both analyse and invent."],
+  "analytical+entrepreneurial":["The Architect","You build with purpose. Strategy, systems, and results are your natural territory. You turn complex ideas into scalable, real-world outcomes."],
+  "creative+social":["The Connector","People and expression are your superpowers. You thrive where communication, culture, and human experience intersect — and you make people feel seen."],
+  "social+empathetic":["The Advocate","You are driven by purpose and people. Your greatest work happens when you can improve the lives of others — whether one person at a time or at scale."],
+  "entrepreneurial+practical":["The Builder","You don't just dream — you execute. You're at your best when there's something tangible to create, a process to improve, or a team to lead toward a concrete goal."],
+  "practical+analytical":["The Specialist","Depth is your edge. You want to master something completely. You're drawn to craft, precision, and the satisfaction of getting things right."],
+  "creative+entrepreneurial":["The Disruptor","You see what doesn't exist yet and feel compelled to make it real. You're energised by novelty, originality, and building something that hasn't been built before."],
+  "social+entrepreneurial":["The Leader","You build things and bring people with you. Whether it's a team, a community, or a movement — your gravity pulls others toward a shared vision."]
+};
+
+let S={section:0,question:0,answers:{},rankState:{},done:false};
+function key(s,q){return`${s}_${q}`;}
+
+function startAssessment(){
+  document.getElementById('landing').style.display='none';
+  const a=document.getElementById('assessment');
+  a.style.display='flex';
+  render();
+  window.scrollTo(0,0);
+}
+
+function render(){
+  if(S.done){renderResults();return;}
+  const sec=SECTIONS[S.section];
+  const qi=S.question;
+  const q=sec.questions[qi];
+  const totalQ=SECTIONS.reduce((s,x)=>s+x.questions.length,0);
+  const doneQ=SECTIONS.slice(0,S.section).reduce((s,x)=>s+x.questions.length,0)+qi;
+  const pct=Math.round((doneQ/totalQ)*100);
+
+  document.getElementById('prog').style.width=pct+'%';
+  document.getElementById('prog-label').textContent=`Section ${S.section+1} of ${SECTIONS.length} — ${sec.title}`;
+  document.getElementById('pct-badge').textContent=pct+'%';
+
+  const answered=S.answers[key(S.section,qi)];
+  const canNext=answered!==undefined;
+
+  let optHTML='';
+  if(sec.type==='rank'){
+    const arr=S.rankState[key(S.section,qi)]||[];
+    optHTML=`<div class="rank-hint">⟳ Tap in order — first tap = ranked #1</div><div class="rank-opts">`+
+      q.options.map((o,i)=>{const p=arr.indexOf(i);const r=p!==-1;
+        return`<div class="rank-item${r?' rk':''}" onclick="handleRank(${i})"><div class="rbadge">${r?p+1:'·'}</div>${o}</div>`;
+      }).join('')+`</div>`;
+  } else {
+    optHTML=`<div class="opts">`+q.options.map((o,i)=>{const sel=answered===i;
+      return`<button class="opt${sel?' sel':''}" onclick="handleAnswer(${i})"><div class="odot"></div>${o}</button>`;
+    }).join('')+`</div>`;
+  }
+
+  const isLast=S.section===SECTIONS.length-1&&qi===sec.questions.length-1;
+  const hideBack=qi===0&&S.section===0;
+
+  document.getElementById('a-body').innerHTML=`
+    <div class="sec-pill">${sec.title}</div>
+    <div class="sec-desc">${sec.desc}</div>
+    <div class="q-card">
+      <div class="q-num">Question ${qi+1} of ${sec.questions.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${optHTML}
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="handleBack()" style="${hideBack?'visibility:hidden':''}">← Back</button>
+      <button class="btn-next" onclick="handleNext()" ${!canNext?'disabled':''}>
+        ${isLast?'See my results ✦':'Next →'}
+      </button>
+    </div>`;
+  window.scrollTo(0,0);
+}
+
+function handleAnswer(i){S.answers[key(S.section,S.question)]=i;render();}
+
+function handleRank(i){
+  const k=key(S.section,S.question);
+  if(!S.rankState[k])S.rankState[k]=[];
+  const arr=S.rankState[k];
+  const idx=arr.indexOf(i);
+  if(idx!==-1){arr.splice(idx,1);}else if(arr.length<4){arr.push(i);}
+  const q=SECTIONS[S.section].questions[S.question];
+  if(arr.length===q.options.length){S.answers[k]=[...arr];}else{delete S.answers[k];}
+  render();
+}
+
+function handleNext(){
+  const sec=SECTIONS[S.section];
+  if(S.question<sec.questions.length-1){S.question++;}
+  else if(S.section<SECTIONS.length-1){S.section++;S.question=0;}
+  else{S.done=true;}
+  render();
+}
+
+function handleBack(){
+  if(S.question>0){S.question--;}
+  else if(S.section>0){S.section--;S.question=SECTIONS[S.section].questions.length-1;}
+  render();
+}
+
+function computeTraits(){
+  const scores={};TRAIT_KEYS.forEach(t=>scores[t]=0);
+  Object.entries(S.answers).forEach(([k,v])=>{
+    const[si,qi]=k.split('_').map(Number);
+    const sec=SECTIONS[si];
+    if(sec.type==='rank'){
+      v.forEach((optIdx,rp)=>{
+        const w=[4,3,2,1][rp]||1;
+        const t=["analytical","creative","entrepreneurial","social"][optIdx%4];
+        scores[t]=(scores[t]||0)+w;
+      });
+    }else{
+      const t=["analytical","creative","social","entrepreneurial"][v%4];
+      scores[t]=(scores[t]||0)+2;
+      if(v===1||v===2)scores["empathetic"]=(scores["empathetic"]||0)+1;
+      if(v===2)scores["practical"]=(scores["practical"]||0)+1;
+    }
+  });
+  const max=Math.max(...Object.values(scores),1);
+  const pct={};TRAIT_KEYS.forEach(t=>pct[t]=Math.round((scores[t]/max)*100));
+  return{scores,pct};
+}
+
+function getProfile(scores){
+  const top=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  const t1=top[0][0],t2=top[1][0];
+  return PROFILES[`${t1}+${t2}`]||PROFILES[`${t2}+${t1}`]||["The Explorer","You have a broad, curious profile with strengths across multiple domains. You resist being put in a box — and that flexibility is a real asset in a fast-changing world."];
+}
+
+function arcPath(pct){
+  const r=22,cx=28,cy=28,circ=2*Math.PI*r;
+  const offset=circ-(pct/100)*circ;
+  return`<svg width="56" height="56" viewBox="0 0 56 56"><circle class="bg" cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke-width="4"/><circle class="fg" cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke-width="4" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"/></svg>`;
+}
+
+function renderResults(){
+  const{scores,pct}=computeTraits();
+  const[profileName,profileDesc]=getProfile(scores);
+  const topPaths=PATHS.map(p=>({...p,score:scores[p.match]||0})).sort((a,b)=>b.score-a.score).slice(0,4);
+  const allRoles=[...new Set(topPaths.flatMap(p=>p.roles))].slice(0,12);
+  const topTraitLabel=TRAIT_LABELS[TRAIT_KEYS.indexOf(Object.entries(pct).sort((a,b)=>b[1]-a[1])[0][0])];
+
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('prog-label').textContent='Assessment complete';
+  document.getElementById('pct-badge').textContent='100%';
+
+  document.getElementById('a-body').innerHTML=`
+    <div class="results-hero">
+      <div class="results-kicker">Your Optira profile</div>
+      <div class="results-title">Here's what we found</div>
+      <div class="results-sub">Based on your responses across all 9 sections</div>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-type-label">Profile type</div>
+      <div class="profile-type-name">${profileName}</div>
+      <div class="profile-type-desc">${profileDesc}</div>
+    </div>
+
+    <div class="res-section-label">Trait breakdown</div>
+    <div class="trait-grid">
+      ${TRAIT_KEYS.map((t,i)=>`<div class="trait-card">
+        <div class="trait-name">${TRAIT_LABELS[i]}</div>
+        <div class="trait-arc" style="--c:${TRAIT_COLORS[i]}">${arcPath(pct[t]).replace('var(--violet-light)',TRAIT_COLORS[i])}</div>
+        <div class="trait-val">${pct[t]}%</div>
+      </div>`).join('')}
+    </div>
+
+    <div class="res-section-label">Paths to explore</div>
+    <div class="path-grid">
+      ${topPaths.map((p,i)=>`<div class="path-card${i===0?' top':''}">
+        <div class="path-icon-wrap">${p.icon}</div>
+        <div class="path-name">${p.name}</div>
+        <div class="path-desc">${p.desc}</div>
+        <span class="match-pill${i===0?' top-m':''}">${i===0?'✦ Top match':i===1?'Strong match':'Good match'}</span>
+      </div>`).join('')}
+    </div>
+
+    <div class="res-section-label">Roles to consider</div>
+    <div class="role-wrap">
+      ${allRoles.map((r,i)=>`<div class="role-tag${i<6?' hi':''}">${r}</div>`).join('')}
+    </div>
+
+    <div class="res-section-label">Key insights</div>
+    <div class="insight-list">
+      <div class="insight"><div class="ins-icon">→</div>You tend to be most ${topTraitLabel.toLowerCase()} in how you approach problems — lean into environments that reward this.</div>
+      <div class="insight"><div class="ins-icon">→</div>Your energy profile suggests you do your best work when there's a real challenge, a sense of purpose, or creative scope involved.</div>
+      <div class="insight"><div class="ins-icon">→</div>The sectors matched above align with the strongest patterns in your responses — treat them as starting points, not limitations.</div>
+      <div class="insight"><div class="ins-icon">→</div>Your combination of strengths is increasingly valuable in a changing workforce. Find contexts where more than one of them can fire at once.</div>
+    </div>
+
+    <div class="results-footer">
+      <p>Want to explore a different angle?</p>
+      <button class="btn-restart" onclick="restartTest()">↺ Retake the assessment</button>
+    </div>
+  `;
+  window.scrollTo(0,0);
+}
+
+function restartTest(){
+  S={section:0,question:0,answers:{},rankState:{},done:false};
+  render();
+}
+</script>
+</body>
+</html>
